@@ -272,6 +272,8 @@ class BatchLoader(object):
 	    im	     = cur_data[0]
             label    = cur_data[1]
 	    pts	     = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+            if random.choice([0,1])==1:
+                im = cv2.flip(im,random.choice([-1,0,1]))
             self.neg_cur += 1
             return im, label, pts
 
@@ -283,6 +285,8 @@ class BatchLoader(object):
             im       = cur_data[0]
             label    = cur_data[1]
             pts      = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+            if random.choice([0,1])==1:
+                im = cv2.flip(im,random.choice([-1,0,1]))
             self.blur_cur += 1
             return im, label, pts
 
@@ -294,6 +298,8 @@ class BatchLoader(object):
             im       = cur_data[0]
             label    = cur_data[1]
             pts      = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+            if random.choice([0,1])==1:
+                im = cv2.flip(im,random.choice([-1,0,1]))
             self.pose_cur += 1
             return im, label, pts
 
@@ -305,6 +311,8 @@ class BatchLoader(object):
             im       = cur_data[0]
             label    = cur_data[1]
             pts      = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+            if random.choice([0,1])==1:
+                im = cv2.flip(im,random.choice([-1,0,1]))
             self.cover_cur += 1
             return im, label, pts
 
@@ -314,7 +322,7 @@ class BatchLoader(object):
                 random.shuffle(self.pts_list)
 	    cur_data = self.pts_list[self.pts_cur]  # Get the image index
 	    im	     = cur_data[0]
-            label    = -1
+            label    = cur_data[1]
 	    pts	     = cur_data[2]
             self.pts_cur += 1
             return im, label, pts
