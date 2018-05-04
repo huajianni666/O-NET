@@ -1,4 +1,4 @@
-name: "face_48"
+name: "Face_48_ONet"
 layer {
   name: "PythonLayer"
   type: "Python"
@@ -210,10 +210,10 @@ layer {
   }
 }
 layer {
-  name: "fc6-1"
+  name: "fc6-cls"
   type: "InnerProduct"
   bottom: "fc5"
-  top: "fc6-1"
+  top: "fc6-cls"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -223,7 +223,7 @@ layer {
     decay_mult: 1
   }
   inner_product_param {
-    num_output: 2
+    num_output: 5
     weight_filler {
      type: "xavier"
     }
@@ -236,9 +236,9 @@ layer {
 layer {
   name: "cls_bridge"
   type: "Python"
-  bottom: "fc6-1"
+  bottom: "fc6-cls"
   bottom: "label"
-  top: "fc6-1-valid"
+  top: "fc6-cls-valid"
   top: "label-valid"
   python_param {
     module: "pythonLayer"
@@ -248,7 +248,7 @@ layer {
 layer {
   name: "ClassifyLoss"
   type: "SoftmaxWithLoss"
-  bottom: "fc6-1-valid"
+  bottom: "fc6-cls-valid"
   bottom: "label-valid"
   top: "ClassifyLoss"
   propagate_down: 1
@@ -258,7 +258,7 @@ layer {
 layer {
   name: "cls_Acc"
   type: "Accuracy"
-  bottom: "fc6-1-valid"
+  bottom: "fc6-cls-valid"
   bottom: "label-valid"
   top: "cls_Acc"
   include {
@@ -266,46 +266,10 @@ layer {
   }
 }
 layer {
-  name: "fc6-2"
+  name: "fc6-pts"
   type: "InnerProduct"
   bottom: "fc5"
-  top: "fc6-2"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 1
-  }
-  inner_product_param {
-    num_output: 4
-    weight_filler {
-     type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "RegressionLoss"
-  type: "Python"
-  bottom: "fc6-2"
-  bottom: "roi"
-  top: "RegressionLoss"
-  loss_weight: 0.5
-  python_param {
-    module: "pythonLayer"
-    layer:  "regression_Layer"
-  }
-}
-layer {
-  name: "fc6-3"
-  type: "InnerProduct"
-  bottom: "fc5"
-  top: "fc6-3"
+  top: "fc6-pts"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -328,7 +292,7 @@ layer {
 layer {
   name: "LandmarkLoss"
   type: "Python"
-  bottom: "fc6-3"
+  bottom: "fc6-pts"
   bottom: "pts"
   top: "LandmarkLoss"
   loss_weight: 1

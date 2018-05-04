@@ -8,8 +8,17 @@ with open('%s/pos_%s.txt'%(net, size), 'r') as f:
 with open('%s/neg_%s.txt'%(net, size), 'r') as f:
     neg = f.readlines()
 
-with open('%s/part_%s.txt'%(net, size), 'r') as f:
-    part = f.readlines()
+with open('%s/blur_%s.txt'%(net, size), 'r') as f:
+    blur = f.readlines()
+
+with open('%s/pose_%s.txt'%(net, size), 'r') as f:
+    pose = f.readlines()
+
+with open('%s/normal_%s.txt'%(net, size), 'r') as f:
+    normal = f.readlines()
+
+with open('%s/cover_%s.txt'%(net, size), 'r') as f:
+    cover  = f.readlines()
     
 def view_bar(num, total):
     rate = float(num) / total
@@ -26,32 +35,31 @@ import numpy as np
 cls_list = []
 print '\n'+'positive-48'
 cur_ = 0
-sum_ = len(pos2)
-for line in pos2:
+sum_ = len(pos)
+for line in pos:
     view_bar(cur_,sum_)
     cur_ += 1
     words = line.split()
-    image_file_name = '../48net/'+words[0]+'.jpg'
+    image_file_name = '../48net'+'/pos/'+words[0]+'.jpg'
     im = cv2.imread(image_file_name)
     h,w,ch = im.shape
     if h!=48 or w!=48:
         im = cv2.resize(im,(48,48))
     im = np.swapaxes(im, 0, 2)
     im = (im - 127.5)/127.5
-    label    = 1
-    roi      = [-1,-1,-1,-1]
-    pts	     = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-    cls_list.append([im,label,roi])
+    label    = float(words[1])
+    pts	     = [float(words[2]),float(words[3]),float(words[4]),float(words[5]),float(words[6]),float(words[7]),float(words[8]),floa(words[9]),float(words[10]),float(words[11])]
+    cls_list.append([im,label,pts])
 print '\n'+'negative-48'
 cur_ = 0
-neg_keep = npr.choice(len(neg2), size=600000, replace=False)
+neg_keep = npr.choice(len(neg), size=len(neg), replace=False)
 sum_ = len(neg_keep)
 for i in neg_keep:
-    line = neg2[i]
+    line = neg[i]
     view_bar(cur_,sum_)
     cur_ += 1
     words = line.split()
-    image_file_name = '../48net/'+words[0]+'.jpg'
+    image_file_name = '../48net'+'/neg/'+words[0]+'.jpg'
     im = cv2.imread(image_file_name)
     h,w,ch = im.shape
     if h!=48 or w!=48:
@@ -59,11 +67,32 @@ for i in neg_keep:
     im = np.swapaxes(im, 0, 2)
     im = (im - 127.5)/127.5
     label    = 0
-    roi      = [-1,-1,-1,-1]
     pts	     = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-    cls_list.append([im,label,roi]) 
+    cls_list.append([im,label,roi])
+
+print '\n'+'-48'
+cur_ = 0
+sum_ = len(pos)
+for line in pos:
+    view_bar(cur_,sum_)
+    cur_ += 1
+    words = line.split()
+    image_file_name = '../48net'+'/pos/'+words[0]+'.jpg'
+    im = cv2.imread(image_file_name)
+    h,w,ch = im.shape
+    if h!=48 or w!=48:
+        im = cv2.resize(im,(48,48))
+    im = np.swapaxes(im, 0, 2)
+    im = (im - 127.5)/127.5
+    label    = 1
+    pts      = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+    cls_list.append([im,label,pts])
+
+
+
+
 import cPickle as pickle
-fid = open("../48net/48/cls.imdb",'w')
+fid = open("../48net/imdb/cls.imdb",'w')
 pickle.dump(cls_list, fid)
 fid.close()
 

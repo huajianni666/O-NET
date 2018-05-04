@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-export PYTHONPATH=$PYTHONPATH:/home/cmcc/caffe-master/examples/mtcnn-caffe/48net
-set -e
-~/caffe-master/build/tools/caffe train \
-	 --solver=./solver.prototxt \
-  	 #--weights=./48net-only-cls.caffemodel
+export PYTHONPATH=$PYTHONPATH:/workspace/run/huajianni/O-NET/48net
+./../../RefineDet/build/tools/caffe train \
+	 --solver=solver.prototxt \
+  	 --weights=48net.caffemodel \
+         --gpu 0,1  2>&1 | tee jobs/onet_train.log
