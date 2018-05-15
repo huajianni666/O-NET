@@ -11,10 +11,6 @@ This project provide you a method to update multi-task-loss for multi-input sour
 2. cPickle && cv2 && numpy 
 
 ## Train Data
-The training data generate process can refer to [Seanlinx/mtcnn](https://github.com/Seanlinx/mtcnn)
-
-Sample almost similar to Seanlinx's can be found in `prepare_data`
-
 -  Download Wider Face Training part only from Official Website and unzip to replace `WIDER_train`
 -  Cross train among different label databases sharing backbone net.
 ## Net
