@@ -1,13 +1,12 @@
 name: "Face_48_ONet"
 layer {
-  name: "PythonLayer"
+  name: "Data"
   type: "Python"
   top: "data"
   top: "label"
-  top: "roi"
   top: "pts"
   python_param {
-    module: "pythonLayer"
+    module: "myDataLayer"
     layer:  "Data_Layer_train"
   }
 }
@@ -234,36 +233,12 @@ layer {
   }
 }
 layer {
-  name: "cls_bridge"
-  type: "Python"
-  bottom: "fc6-cls"
-  bottom: "label"
-  top: "fc6-cls-valid"
-  top: "label-valid"
-  python_param {
-    module: "pythonLayer"
-    layer:  "cls_Layer"
-  }
-}
-layer {
   name: "ClassifyLoss"
   type: "SoftmaxWithLoss"
-  bottom: "fc6-cls-valid"
-  bottom: "label-valid"
+  bottom: "fc6-cls"
+  bottom: "label"
   top: "ClassifyLoss"
-  propagate_down: 1
-  propagate_down: 0
   loss_weight: 1
-}
-layer {
-  name: "cls_Acc"
-  type: "Accuracy"
-  bottom: "fc6-cls-valid"
-  bottom: "label-valid"
-  top: "cls_Acc"
-  include {
-    phase: TRAIN
-  }
 }
 layer {
   name: "fc6-pts"
@@ -290,14 +265,22 @@ layer {
   }
 }
 layer {
-  name: "LandmarkLoss"
+  name: "pts_bridge"
   type: "Python"
   bottom: "fc6-pts"
   bottom: "pts"
-  top: "LandmarkLoss"
-  loss_weight: 1
+  top: "fc6-pts-valid"
+  top: "pts-valid"
   python_param {
-    module: "pythonLayer"
-    layer:  "regression_Layer"
+    module: "myDataLayer"
+    layer:  "filter_Layer"
   }
+}
+layer {
+  name: "PointLoss"
+  type: "EuclideanLoss"
+  bottom: "fc6-pts-valid"
+  bottom: "pts-valid"
+  top: "loss_points"
+  loss_weight: 10
 }
